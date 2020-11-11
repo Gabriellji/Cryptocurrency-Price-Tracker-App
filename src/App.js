@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import './App.css';
+import Coin from './Coin'
 
 function App() {
   const [coins, setCoins] = useState([]);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     axios
@@ -14,6 +16,13 @@ function App() {
       .catch(error => console.log(error));
   }, []);
 
+  const handleChange = e => {
+    setSearch(e.target.value)
+  }
+
+  const filteredCoins = coins.filter(coin => 
+    coin.name.toLowerCase().includes(search.toLocaleLowerCase())
+    )
   return (
     <div className="coin-app">
       <div className="coin-search">
@@ -22,7 +31,19 @@ function App() {
           <input type="text"></input>
         </form>
       </div>
-      
+    {filteredCoins.map(coin => {
+      return (
+        <Coin 
+        key={coin.id} 
+        name={coin.name} 
+        image={coin.image}
+        symbol={coin.symbol}
+        volume={coin.market_cap}
+        price={coin.current_price}
+        />
+      )
+
+    })}
     </div>
   );
 }
